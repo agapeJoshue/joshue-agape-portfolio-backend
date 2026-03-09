@@ -10,7 +10,6 @@ app = FastAPI(title="Portfolio API avec OpenAI")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://raharison-joshue-agape-folio.vercel.app"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
