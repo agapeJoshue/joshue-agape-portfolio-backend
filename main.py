@@ -141,9 +141,10 @@ def ask__groq_ai(q: Question):
                             detail=f"AI request error: {str(e)}")
 
 
-MODEL_URL = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
+MODEL_URL = "https://router.huggingface.co/v1/chat/completions"
 
-@app.post("/ask")
+
+@app.post("/ask-hf-ai")
 def ask_ai(q: Question):
     context = load_context()
 
@@ -163,6 +164,15 @@ def ask_ai(q: Question):
 
         Answer:
     """
+    payload = {
+            "model": "meta-llama/Meta-Llama-3-8B-Instruct",
+            "messages": [
+                {"role": "system", "content": "You are a helpful portfolio AI assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.7,
+            "max_new_tokens": 400
+        }
 
     try:
         response = requests.post(
@@ -171,32 +181,20 @@ def ask_ai(q: Question):
                 "Authorization": f"Bearer {HF_API_KEY}",
                 "Content-Type": "application/json",
             },
-            json={
-                "inputs": prompt,
-                "parameters": {
-                    "temperature": 0.7,
-                    "max_new_tokens": 400,
-                    "return_full_text": False,
-                },
-            },
+            json=payload,
             timeout=60,
         )
 
         response.raise_for_status()
-
         data = response.json()
 
-        print("DEBUG HF:", data)
-
-        if isinstance(data, list) and "generated_text" in data[0]:
-            answer = data[0]["generated_text"]
-        else:
-            raise HTTPException(status_code=500, detail="Invalid AI response")
+        answer = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        if not answer:
+            raise HTTPException(status_code=500, detail="AI response invalid")
 
         return {"answer": answer.strip()}
 
     except requests.exceptions.RequestException as e:
-        print("ERROR:", e)
         raise HTTPException(
             status_code=500, detail=f"HuggingFace request error: {str(e)}"
         )
