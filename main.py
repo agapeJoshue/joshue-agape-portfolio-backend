@@ -141,10 +141,7 @@ def ask__groq_ai(q: Question):
                             detail=f"AI request error: {str(e)}")
 
 
-MODEL_URL = (
-    "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
-)
-
+MODEL_URL = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
 
 @app.post("/ask")
 def ask_ai(q: Question):
