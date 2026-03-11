@@ -1,4 +1,5 @@
 import os
+import time
 import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
@@ -63,23 +64,58 @@ async def contact(form: ProjectForm):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-OLLAMA_URL = os.getenv(
-    "OLLAMA_URL", "http://ollama:11434"
-)
-MODEL_NAME = os.getenv("OLLAMA_MODEL", "llama3")
+HF_API_KEY = os.getenv("HF_API_KEY")
+MODEL_NAME = "sarvamai/sarvam-30b"
+MODEL_URL = f"https://api-inference.huggingface.co/models/{MODEL_NAME}"
 
 
 class Question(BaseModel):
     question: str
 
 
-def load_context():
+def load_context() -> str:
     try:
         with open("data.txt", "r", encoding="utf-8") as f:
             return f.read()
     except Exception as e:
         print("ERROR loading data.txt:", e)
-        return "No portfolio information available."
+        return "Portfolio information not available."
+
+
+def query_huggingface(prompt: str, retries: int = 2, delay: int = 2) -> str:
+    for attempt in range(retries + 1):
+        try:
+            response = requests.post(
+                MODEL_URL,
+                headers={
+                    "Authorization": f"Bearer {HF_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "inputs": prompt,
+                    "parameters": {
+                        "temperature": 0.7,
+                        "max_new_tokens": 400,
+                        "return_full_text": False,
+                    },
+                },
+                timeout=60,
+            )
+            response.raise_for_status()
+            data = response.json()
+            if isinstance(data, list) and "generated_text" in data[0]:
+                return data[0]["generated_text"].strip()
+            else:
+                print("WARNING: Invalid HF response structure:", data)
+        except requests.exceptions.RequestException as e:
+            print(f"WARNING: HF request failed (attempt {attempt + 1}): {e}")
+            if attempt < retries:
+                time.sleep(delay)
+    return (
+        "Merci pour votre message ! "
+        "Le serveur AI n'est pas encore disponible. "
+        "Veuillez réessayer plus tard."
+    )
 
 
 @app.post("/ask")
@@ -89,11 +125,13 @@ def ask_ai(q: Question):
     prompt = f"""
         You are an AI assistant integrated into a developer portfolio.
 
-        - Answer naturally.
-        - If the question is about the portfolio owner (skills, projects,
-        experience, personal info),
-        use ONLY the information below.
-        - If it is about something else, answer normally.
+        Rules:
+        - Answer questions naturally and clearly.
+        - If the question is about the portfolio owner
+            (skills, projects, experience, personal info),
+            ONLY use the information in the portfolio context.
+        - If the question is about something else, answer normally
+            without referencing the portfolio context.
 
         Portfolio information:
         {context}
@@ -104,37 +142,5 @@ def ask_ai(q: Question):
         Answer:
     """
 
-    payload = {
-        "model": MODEL_NAME,
-        "prompt": prompt,
-        "temperature": 0.7,
-        "max_tokens": 400,
-    }
-
-    try:
-        response = requests.post(
-            f"{OLLAMA_URL}/v1/completions", json=payload, timeout=60
-        )
-        response.raise_for_status()
-        data = response.json()
-
-        answer = (
-            data.get("completion")
-            or data.get("completions", [{}])[0].get("output")
-            or None
-        )
-        if not answer:
-            raise HTTPException(
-                status_code=500, detail="Ollama returned empty response"
-            )
-
-        return {"answer": answer.strip()}
-
-    except requests.exceptions.RequestException as e:
-        print("Ollama request failed:", e)
-        fallback_msg = (
-            "Merci pour votre message ! "
-            "Le serveur AI n'est pas encoredisponible. "
-            "Veuillez réessayer plus tard."
-        )
-        return {"answer": fallback_msg}
+    answer = query_huggingface(prompt)
+    return {"answer": answer}
