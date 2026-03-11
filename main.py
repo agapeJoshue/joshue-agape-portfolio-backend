@@ -80,24 +80,30 @@ def ask_ai(q: Question):
     context = load_context()
 
     prompt = f"""
-You are an AI assistant for my portfolio.
+        You are an AI assistant integrated into a developer portfolio.
 
-Answer any question, but if the question is about me, use ONLY the information below.
+        - Answer all questions naturally.
+        - If a question is about the portfolio owner (their skills, projects,
+        experience, or personal info), use ONLY the information below.
+        - If the question is about someone or something else, answer normally
+        without referencing the portfolio data.
 
-Portfolio info:
-{context}
+        Portfolio information (only use for questions about
+        the portfolio owner):
+        {context}
 
-Question:
-{q.question}
-"""
+        User question:
+        {q.question}
+    """
 
     try:
         payload = {
-            "model": "llama-3.1-8b-instant",  # mixtral-8x7b
+            "model": "llama-3.1-8b-instant",
             "messages": [
                 {
                     "role": "system",
-                    "content": "You are a helpful AI assistant in a developer portfolio.",
+                    "content":
+                    "You are a helpful AI assistant in a developer portfolio.",
                 },
                 {"role": "user", "content": prompt},
             ],
@@ -130,4 +136,5 @@ Question:
 
     except requests.exceptions.RequestException as e:
         print("ERROR: AI request failed", e)
-        raise HTTPException(status_code=500, detail=f"AI request error: {str(e)}")
+        raise HTTPException(status_code=500,
+                            detail=f"AI request error: {str(e)}")
