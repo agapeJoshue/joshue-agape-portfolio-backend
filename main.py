@@ -67,8 +67,12 @@ class Question(BaseModel):
 
 
 def load_context():
-    with open("data.txt", "r", encoding="utf-8") as f:
-        return f.read()
+    try:
+        with open("data.txt", "r", encoding="utf-8") as f:
+            return f.read()
+    except Exception as e:
+        print("ERROR loading data.txt:", e)
+        return "No portfolio information available."
 
 
 @app.post("/ask")
@@ -76,15 +80,19 @@ def ask_ai(q: Question):
     context = load_context()
 
     prompt = f"""
-You are an assistant for my portfolio.
-Answer only using the information below.
+    You are an AI assistant integrated in my developer portfolio.
 
-Information:
-{context}
+    You can answer ANY question normally.
 
-Question:
-{q.question}
-"""
+    But if the question is about the portfolio owner, his skills, projects,
+    experience or personal information, you MUST use the information below.
+
+    Portfolio information:
+    {context}
+
+    User question:
+    {q.question}
+    """
 
     try:
         response = requests.post(
@@ -95,7 +103,14 @@ Question:
             },
             json={
                 "model": "llama3-8b-8192",
-                "messages": [{"role": "user", "content": prompt}],
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are a helpful AI assistant in a developer portfolio.",
+                    },
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": 0.7,
             },
             timeout=30,
         )
@@ -104,21 +119,30 @@ Question:
 
         data = response.json()
 
+        print("AI RAW RESPONSE:", data)  # debug
+
         answer = data.get("choices", [{}])[0].get("message", {}).get("content")
 
         if not answer:
+            print("ERROR: AI response invalid")
             raise HTTPException(status_code=500, detail="AI response invalid")
 
         return {"answer": answer}
 
-    except requests.exceptions.Timeout:
+    except requests.exceptions.Timeout as e:
+        print("ERROR: Timeout contacting AI:", e)
         raise HTTPException(status_code=504, detail="AI request timeout")
 
-    except requests.exceptions.ConnectionError:
-        raise HTTPException(status_code=503, detail="Unable to connect to AI service")
+    except requests.exceptions.ConnectionError as e:
+        print("ERROR: Connection error:", e)
+        raise HTTPException(status_code=503, detail="Unable to connect to AI")
 
     except requests.exceptions.RequestException as e:
-        raise HTTPException(status_code=500, detail=f"AI request error: {str(e)}")
+        print("ERROR: Request exception:", e)
+        raise HTTPException(status_code=500,
+                            detail=f"AI request error: {str(e)}")
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+        print("UNEXPECTED ERROR:", e)
+        raise HTTPException(status_code=500,
+                            detail=f"Unexpected error: {str(e)}")
