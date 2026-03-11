@@ -80,69 +80,54 @@ def ask_ai(q: Question):
     context = load_context()
 
     prompt = f"""
-    You are an AI assistant integrated in my developer portfolio.
+You are an AI assistant for my portfolio.
 
-    You can answer ANY question normally.
+Answer any question, but if the question is about me, use ONLY the information below.
 
-    But if the question is about the portfolio owner, his skills, projects,
-    experience or personal information, you MUST use the information below.
+Portfolio info:
+{context}
 
-    Portfolio information:
-    {context}
-
-    User question:
-    {q.question}
-    """
+Question:
+{q.question}
+"""
 
     try:
+        payload = {
+            "model": "llama-3.1-8b-instant",  # mixtral-8x7b
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful AI assistant in a developer portfolio.",
+                },
+                {"role": "user", "content": prompt},
+            ],
+            "temperature": 0.7,
+        }
+
+        print("DEBUG: Payload to Groq:", payload)
+
         response = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {GROQ_API_KEY}",
                 "Content-Type": "application/json",
             },
-            json={
-                "model": "llama3-8b-8192",
-                "messages": [
-                    {
-                        "role": "system",
-                        "content": "You are a helpful AI assistant in a developer portfolio.",
-                    },
-                    {"role": "user", "content": prompt},
-                ],
-                "temperature": 0.7,
-            },
+            json=payload,
             timeout=30,
         )
 
         response.raise_for_status()
 
         data = response.json()
-
-        print("AI RAW RESPONSE:", data)  # debug
+        print("DEBUG: AI response:", data)
 
         answer = data.get("choices", [{}])[0].get("message", {}).get("content")
 
         if not answer:
-            print("ERROR: AI response invalid")
             raise HTTPException(status_code=500, detail="AI response invalid")
 
         return {"answer": answer}
 
-    except requests.exceptions.Timeout as e:
-        print("ERROR: Timeout contacting AI:", e)
-        raise HTTPException(status_code=504, detail="AI request timeout")
-
-    except requests.exceptions.ConnectionError as e:
-        print("ERROR: Connection error:", e)
-        raise HTTPException(status_code=503, detail="Unable to connect to AI")
-
     except requests.exceptions.RequestException as e:
-        print("ERROR: Request exception:", e)
-        raise HTTPException(status_code=500,
-                            detail=f"AI request error: {str(e)}")
-
-    except Exception as e:
-        print("UNEXPECTED ERROR:", e)
-        raise HTTPException(status_code=500,
-                            detail=f"Unexpected error: {str(e)}")
+        print("ERROR: AI request failed", e)
+        raise HTTPException(status_code=500, detail=f"AI request error: {str(e)}")
