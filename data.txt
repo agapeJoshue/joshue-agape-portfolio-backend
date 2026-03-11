@@ -1,0 +1,4 @@
+Nom: Josh Agape
+Développeur: Fullstack
+Technologies: React, Next.js, FastAPI, Python
+Projet: Visualisation de l'algorithme de Dijkstra

@@ -1,4 +1,5 @@
 import os
+import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,6 +14,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DOCUMENTS_DIR = os.path.join(BASE_DIR, "documents")
@@ -57,3 +60,65 @@ async def contact(form: ProjectForm):
         return {"message": "Email envoyé avec succès"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+class Question(BaseModel):
+    question: str
+
+
+def load_context():
+    with open("data.txt", "r", encoding="utf-8") as f:
+        return f.read()
+
+
+@app.post("/ask")
+def ask_ai(q: Question):
+    context = load_context()
+
+    prompt = f"""
+You are an assistant for my portfolio.
+Answer only using the information below.
+
+Information:
+{context}
+
+Question:
+{q.question}
+"""
+
+    try:
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "llama3-8b-8192",
+                "messages": [{"role": "user", "content": prompt}],
+            },
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        data = response.json()
+
+        answer = data.get("choices", [{}])[0].get("message", {}).get("content")
+
+        if not answer:
+            raise HTTPException(status_code=500, detail="AI response invalid")
+
+        return {"answer": answer}
+
+    except requests.exceptions.Timeout:
+        raise HTTPException(status_code=504, detail="AI request timeout")
+
+    except requests.exceptions.ConnectionError:
+        raise HTTPException(status_code=503, detail="Unable to connect to AI service")
+
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"AI request error: {str(e)}")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")

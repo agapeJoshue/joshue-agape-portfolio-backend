@@ -5,3 +5,4 @@ fastapi-mail
 python-dotenv
 pydantic
 jinja2
+requests
