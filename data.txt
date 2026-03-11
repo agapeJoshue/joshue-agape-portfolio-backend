@@ -1,4 +1,382 @@
-Nom: Josh Agape
-Développeur: Fullstack
-Technologies: React, Next.js, FastAPI, Python
-Projet: Visualisation de l'algorithme de Dijkstra
+ASSISTANT KNOWLEDGE BASE
+Portfolio AI Assistant Knowledge
+
+Si un utilisateur pose une question sur Joshué Agapé Raharison, répondre en utilisant uniquement les informations de ce document.
+
+
+================================
+IDENTITÉ
+================================
+
+Nom: RAHARISON
+Prénom: Joshué Agapé
+
+Date de naissance: 27 Novembre 2001
+Lieu de naissance: Port-Bergé, Madagascar
+Nationalité: Malgache
+
+Résidence actuelle: Fianarantsoa, Madagascar
+
+Téléphone:
++261 34 24 393 87
++261 33 68 473 73
+
+Email:
+agapedev.dark@gmail.com
+
+
+================================
+PROFIL PROFESSIONNEL
+================================
+
+Profession:
+Développeur Full-Stack orienté Ops
+
+Expérience:
+Plus de 3 ans d'expérience en développement web et mobile.
+
+Présentation:
+
+Joshué Agapé Raharison est un développeur full-stack spécialisé dans la conception d’applications web et mobiles modernes.
+
+Il possède des compétences en:
+- développement front-end
+- développement back-end
+- design d’interface
+- DevOps et déploiement
+
+Son objectif est de concevoir des systèmes performants, scalables et centrés sur l’utilisateur.
+
+Il est passionné par la technologie et améliore constamment ses compétences grâce à la veille technologique et à la réalisation de projets concrets.
+
+
+================================
+COMPÉTENCES TECHNIQUES
+================================
+
+FRONT-END
+
+Technologies principales:
+
+VueJS (90%)
+React (90%)
+NextJS (90%)
+Angular (75%)
+
+Technologies UI:
+
+HTML (95%)
+CSS (95%)
+TailwindCSS (90%)
+Bootstrap (80%)
+
+Développement Mobile:
+
+React Native (90%)
+Flutter (80%)
+
+
+--------------------------------
+
+BACK-END
+
+Frameworks et langages:
+
+NodeJS / ExpressJS / Sequelize (90%)
+NestJS / Prisma (90%)
+Django (90%)
+FastAPI (90%)
+Flask (80%)
+
+Autres frameworks:
+
+Laravel (80%)
+Symfony (70%)
+SpringBoot (70%)
+Java (75%)
+
+Bases de données:
+
+PostgreSQL
+Redis
+
+
+--------------------------------
+
+DEVOPS ET OUTILS
+
+Docker (90%)
+CI/CD (80%)
+Jenkins (80%)
+Git (95%)
+AWS (60%)
+
+Design UI/UX:
+
+Figma (60%)
+
+
+================================
+SOFT SKILLS
+================================
+
+Résolution de problèmes
+Travail d'équipe
+Communication
+Gestion du temps
+Adaptabilité
+Créativité
+Autonomie
+Attention aux détails
+
+
+================================
+FORMATION
+================================
+
+Master 2 (En cours)
+
+Génie Logiciel et Bases de Données
+École Nationale d’Informatique (ENI)
+Université de Fianarantsoa
+
+
+Licence Professionnelle
+
+Génie Logiciel et Bases de Données
+École Nationale d’Informatique
+Université de Fianarantsoa
+
+
+Baccalauréat Scientifique
+
+Série C
+Lycée Saint-Joseph de Cluny
+Fianarantsoa
+
+
+================================
+PROCESSUS DE TRAVAIL
+================================
+
+Méthodologie de travail de Joshué Agapé Raharison:
+
+1. Analyse des besoins
+Comprendre les objectifs, les utilisateurs et les contraintes du projet.
+
+2. Conception et architecture
+Définition de l’architecture logicielle et des modèles de données.
+
+3. Développement
+Implémentation du front-end, du back-end et des API.
+
+4. Tests et déploiement
+Validation, optimisation et mise en production.
+
+
+================================
+PROJETS PERSONNELS
+================================
+
+AutoFlow
+
+Type: Application Web
+
+Description:
+Plateforme d’automatisation qui analyse les e-mails grâce à l’intelligence artificielle et déclenche automatiquement des actions via des workflows n8n.
+
+Technologies:
+ReactJS
+TailwindCSS
+Flask
+n8n
+WebSocket
+PostgreSQL
+
+
+--------------------------------
+
+MediBook
+
+Type: Application Web
+
+Description:
+Plateforme permettant de trouver des médecins spécialistes à proximité et de prendre rendez-vous en ligne.
+
+Technologies:
+VueJS
+TailwindCSS
+FastAPI
+WebSocket
+PostgreSQL
+
+
+--------------------------------
+
+Planning
+
+Type: Application Web
+
+Description:
+Outil collaboratif pour organiser les réunions, planifier les projets et coordonner les activités d’équipe.
+
+Technologies:
+NextJS
+TailwindCSS
+Django
+Redis
+PostgreSQL
+
+
+--------------------------------
+
+Smart Shop
+
+Type: Application Web
+
+Description:
+Système de gestion e-commerce permettant de gérer les produits, les clients, les commandes et les livraisons.
+
+Technologies:
+VueJS
+TailwindCSS
+ExpressJS
+WebSocket
+PostgreSQL
+
+
+--------------------------------
+
+StockFlow
+
+Type: Application Web
+
+Description:
+Application de gestion d’inventaire permettant de suivre les produits et les niveaux de stock en temps réel.
+
+Technologies:
+NextJS
+TailwindCSS
+ExpressJS
+PostgreSQL
+
+
+================================
+EXPÉRIENCES PROFESSIONNELLES
+================================
+
+Automatisation d’analyse d’e-mails via IA et n8n
+
+Date:
+Octobre 2025 - Novembre 2025
+
+Description:
+Développement d’un système permettant d’analyser les e-mails automatiquement et de déclencher des actions via des workflows n8n.
+
+
+--------------------------------
+
+Application mobile Mandika
+
+Entreprise:
+RAFALTECH
+
+Date:
+Octobre 2025 - Novembre 2025
+
+Description:
+Développement d’une application mobile incluant capture d’image, amélioration visuelle et OCR.
+
+
+--------------------------------
+
+API Plateforme Hello Archi
+
+Entreprise:
+SfyriTech
+
+Date:
+Mai 2024 - Septembre 2024
+
+Description:
+Optimisation du backend existant, développement de nouvelles fonctionnalités et correction de bugs.
+
+================================
+PROJET DE STAGE
+================================
+
+Meeting
+
+Description:
+Application de gestion de rendez-vous synchronisée avec Google Agenda.
+
+Technologies:
+
+VueJS (Quasar + TypeScript)
+NestJS + Prisma
+PostgreSQL
+Google Calendar API
+WebSocket
+
+
+--------------------------------
+
+Gestion commandes et livraisons
+
+Entreprise:
+Open Delivery
+
+Lieu:
+Antsirabe, Madagascar
+
+Date:
+Septembre 2023 - Novembre 2023
+
+Technologies:
+Laravel
+VueJS
+
+================================
+SERVICES PROPOSÉS
+================================
+
+Joshué Agapé Raharison propose les services suivants:
+
+Développement Web Fullstack
+Développement d'applications Web modernes et performantes.
+
+Développement Mobile
+Création d'applications mobiles multiplateformes.
+
+UI/UX Design
+Conception d’interfaces ergonomiques et modernes.
+
+DevOps et Déploiement
+Gestion du déploiement, CI/CD, conteneurisation et monitoring.
+
+
+================================
+QUESTIONS FREQUENTES POUR L’ASSISTANT
+================================
+
+Si quelqu’un demande:
+"Qui est Joshué Agapé Raharison?"
+
+Répondre:
+Joshué Agapé Raharison est un développeur Full-Stack orienté Ops avec plus de 3 ans d’expérience dans le développement d’applications web et mobiles modernes.
+
+
+Si quelqu’un demande:
+"Quelles technologies maîtrise-t-il?"
+
+Répondre en mentionnant les technologies principales:
+React, VueJS, NextJS, NodeJS, NestJS, Django, FastAPI, Docker, PostgreSQL.
+
+
+Si quelqu’un demande:
+"Comment le contacter?"
+
+Répondre:
+
+Email: agapedev.dark@gmail.com
+Téléphone: +261 34 24 393 87 / +261 33 68 473 73

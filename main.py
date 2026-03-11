@@ -16,6 +16,7 @@ app.add_middleware(
 )
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+HF_API_KEY = os.getenv("HF_API_KEY")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DOCUMENTS_DIR = os.path.join(BASE_DIR, "documents")
@@ -75,8 +76,8 @@ def load_context():
         return "No portfolio information available."
 
 
-@app.post("/ask")
-def ask_ai(q: Question):
+@app.post("/ask-groq-ia")
+def ask__groq_ai(q: Question):
     context = load_context()
 
     prompt = f"""
@@ -138,3 +139,67 @@ def ask_ai(q: Question):
         print("ERROR: AI request failed", e)
         raise HTTPException(status_code=500,
                             detail=f"AI request error: {str(e)}")
+
+
+MODEL_URL = (
+    "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+)
+
+
+@app.post("/ask")
+def ask_ai(q: Question):
+    context = load_context()
+
+    prompt = f"""
+        You are an AI assistant integrated into a developer portfolio.
+
+        Rules:
+        - Answer questions naturally and clearly.
+        - If the question is about the portfolio owner (skills, projects, experience, personal info), ONLY use the information in the portfolio context.
+        - If the question is about something else, answer normally without referencing the portfolio context.
+
+        Portfolio information:
+        {context}
+
+        User question:
+        {q.question}
+
+        Answer:
+    """
+
+    try:
+        response = requests.post(
+            MODEL_URL,
+            headers={
+                "Authorization": f"Bearer {HF_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "inputs": prompt,
+                "parameters": {
+                    "temperature": 0.7,
+                    "max_new_tokens": 400,
+                    "return_full_text": False,
+                },
+            },
+            timeout=60,
+        )
+
+        response.raise_for_status()
+
+        data = response.json()
+
+        print("DEBUG HF:", data)
+
+        if isinstance(data, list) and "generated_text" in data[0]:
+            answer = data[0]["generated_text"]
+        else:
+            raise HTTPException(status_code=500, detail="Invalid AI response")
+
+        return {"answer": answer.strip()}
+
+    except requests.exceptions.RequestException as e:
+        print("ERROR:", e)
+        raise HTTPException(
+            status_code=500, detail=f"HuggingFace request error: {str(e)}"
+        )
