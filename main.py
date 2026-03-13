@@ -1,6 +1,7 @@
 import os
 import time
 import requests
+from mangum import Mangum
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -144,3 +145,6 @@ def ask_ai(q: Question):
 
     answer = query_huggingface(prompt)
     return {"answer": answer}
+
+
+handler = Mangum(app)

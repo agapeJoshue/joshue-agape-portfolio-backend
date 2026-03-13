@@ -6,3 +6,4 @@ python-dotenv
 pydantic
 jinja2
 requests
+mangum
